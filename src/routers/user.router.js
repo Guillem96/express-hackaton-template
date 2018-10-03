@@ -6,16 +6,14 @@ var jwt = require('jsonwebtoken');
 const SECRET_KEY = process.env.SECRET_KEY;
 
 // Get a list of all users
-router.get("/", getToken, (req, res) => {
-  ifLoggedInDo(req, res, (sessionInfo) => {
-    UserCtrl.all((err, users) => {
-      if (err) {
-        res.status(500).send(err);
-      } else {
-        res.status(200).send(users);
-      }
-    });
-  })
+router.get("/", getToken, authRequired, (req, res) => {
+  UserCtrl.all((err, users) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.status(200).send(users);
+    }
+  });
 });
 
 // Register a user
@@ -54,17 +52,15 @@ router.post("/login", (req, res) => {
 });
 
 // Delete its user
-router.delete("/", getToken, (req, res) => {
-  ifLoggedInDo(req, res, (sessionInfo) => {
-    UserCtrl.delete(sessionInfo.user.username, (err, deletedUser) => {
-      if (err) {
-        res.status(500).send(err);
-      } else if (!deletedUser) {
-        res.status(400).json({ msg: "Error, user not found..."});
-      } else {
-        res.status(200).json({ msg: "User deleted successfully."});
-      }
-    });
+router.delete("/", getToken, authRequired, (req, res) => {
+  UserCtrl.delete(req.sessionInfo.user.username, (err, deletedUser) => {
+    if (err) {
+      res.status(500).send(err);
+    } else if (!deletedUser) {
+      res.status(400).json({ msg: "Error, user not found..."});
+    } else {
+      res.status(200).json({ msg: "User deleted successfully."});
+    }
   });
 });
 
@@ -96,9 +92,12 @@ function getToken(req, res, next) {
   }
 }
 
-function ifLoggedInDo(req, res, action) {
+function authRequired(req, res, next) {
   verifyToken(req.token, 
-    sessionInfo => action(sessionInfo),
+    sessionInfo => {
+      req.sessionInfo = sessionInfo;
+      next();
+    },
     err => res.status(401).send(err)
   );
 }
