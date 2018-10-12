@@ -7,7 +7,9 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
 // Connect to remote database
-var mongoUrl = process.env.NODE_ENV === 'test' ? process.env.DB_URL_TEST : process.env.DB_URL;
+var mongoUrl = process.env.NODE_ENV === 'test' 
+                  ? process.env.DB_URL_TEST 
+                  : process.env.DB_URL;
 mongoose.set('useCreateIndex', true);
 mongoose.connect(mongoUrl, { useNewUrlParser: true });
 
