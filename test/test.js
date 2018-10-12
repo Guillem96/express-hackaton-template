@@ -7,6 +7,16 @@ var should = chai.should();
 
 chai.use(chaiHttp);
 
+function makeUser() {
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for (var i = 0; i < 5; i++)
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    return text;
+}
+
+
 describe('User tests', function () {
     it('should not list ALL users on /users GET', function (done) {
         chai.request(server)
@@ -22,8 +32,9 @@ describe('User tests', function () {
     it('should register a user on /users POST', function (done) {
         chai.request(server)
             .post('/users')
-            .send({ username: "test-user", password_1: "1234", password_2: "1234"})
+            .send({ username: makeUser(), password_1: "1234", password_2: "1234" })
             .end(function (err, res) {
+                console.log(res.body);
                 if (err)
                     throw err;
                 res.should.have.status(201);
