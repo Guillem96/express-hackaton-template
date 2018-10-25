@@ -15,18 +15,34 @@ Install node dependencies
 ```bash
 $ npm install
 ```
+Option 1:
+  Generate environment variables:
 
-Generate environment variables:
-
-```bash
-$ export SECRET_KEY="<your_secret_key_goes_here_can_be_any_value>"
-$ export DB_URL="<your_heroku_addon_database_url>"
+  ```bash
+  $ export SECRET_KEY="<your_secret_key_goes_here_can_be_any_value>"
+  $ export DB_URL="<your_heroku_addon_database_url>"
+  ```
+Option 2:
+  Create your own global variables nodemon file (loaded automatically).[nodemon.js]
+  ```json
+  {
+    "env":{
+      "DB_URL":"<YOUR_MONGO_DB_URL>",
+      "SECRET_KEY":"<INSERT_THE_VALUE_YOU_WANT_AS_SECRET_KEY>"
+    }
+  }
 ```
+
 
 Run server
 
 ```bash
 $ npm start
+```
+
+Run server with nodemon
+```bash
+$ npm run start-nodemon
 ```
 
 ## Requests
